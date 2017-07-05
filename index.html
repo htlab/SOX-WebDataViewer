@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>KEIO USN: SOXデータビューア</title>
+  <meta charset=utf-8 />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- jQuery and jQuery mobile -->
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+  <script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
+  <script type="text/javascript" src="js/lib/jquery.mobile-1.4.5.min.js"></script>
+  <!-- Various libraries at local -->
+  <script type="text/javascript" src="js/lib/json2.js"></script>
+  <script type="text/javascript" src="js/lib/underscore-min.js"></script>
+  <script type="text/javascript" src="js/lib/backbone.js"></script>
+  <script type="text/javascript" src="js/lib/strophe.js"></script>
+  <script type="text/javascript" src="js/lib/sox.strophe.pubsub.js"></script>
+  <script type="text/javascript" src="js/lib/jscron.js"></script>
+  <script type="text/javascript" src="js/lib/json2html.js"></script>
+  <script type="text/javascript" src="js/lib/jquery.json2html.js"></script>
+  <!-- SOX libraries -->
+  <script type="text/javascript" src="js/sox/SoxClient.js"></script>
+  <script type="text/javascript" src="js/sox/SoxEventListener.js"></script>
+  <script type="text/javascript" src="js/sox/Device.js"></script>
+  <script type="text/javascript" src="js/sox/Transducer.js"></script>
+  <script type="text/javascript" src="js/sox/SensorData.js"></script>
+  <!-- Main JavaScript program-->
+  <script type="text/javascript" src="main.js"></script>
+  <!-- style -->
+  <link href="css/layout.css" media="all" type="text/css" rel="stylesheet"/>
+  <link href="css/index.css" media="all" type="text/css" rel="stylesheet"/>
+</head>
+
+
+<body>
+
+<!-- センサリストページ -->
+<div data-role="page" id="SensorListPage">
+  <div data-role="header">
+    <h1><a href="http://sox.ht.sfc.keio.ac.jp/" target="_blank">KEIO USN</a>: SOXデータビューア</h1>
+    <div data-role="navbar">
+      <ul>
+	<li id="SensorListPageLinkToDeviceList"><a href="#" class="ui-btn-active ui-state-persist">(読み込み中)</a></li>
+	<li><a href="#DataStreamPage">センサデータ</a></li>
+	<li><a href="#ConsolePage">コンソール</a></li>
+      </ul>
+    </div>
+  </div><!-- /header -->
+  <div role="main" class="ui-content">
+    <p>
+    <span>SOXサーバ: <span id="info-soxservername"></span> [<span id="info-soxserverstatus">未接続</span>]</span><br/>
+    <span>現在のセンサノード数: <span id="info-numnodes"></span></span><br/>
+    <br/>
+    <span><b>タップしてセンサを講読 (サブスクライブ) します</b>
+    </p>
+    <ul data-role="listview" data-filter="true"  data-autodividers="true" data-filter-placeholder="検索..." data-insert="true" id="devices">
+    </ul>
+  </div><!-- /content -->
+  <div data-role="footer">
+    <h6><a href="http://sox.ht.sfc.keio.ac.jp/" target="_blank">KEIO Universal Sensor Network with Sensor-Over-XMPP (SOX)</a></h6>
+    <h6>This is a sample program with SOX JS Lib. <a href="./SoxEventViewer.tar.gz" target="_blank">(source code)</a></h6>
+    <h6>Version <span class="version"></span></h6>
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+
+<!-- センサデータページ -->
+<div data-role="page" id="DataStreamPage">
+  <div data-role="header">
+    <h1><a href="http://sox.ht.sfc.keio.ac.jp/" target="_blank">KEIO USN</a>: SOXデータビューア</h1>
+    <div data-role="navbar">
+    <ul>
+      <li id="DataStreamPageLinkToDeviceList"><a href="#">(読み込み中)</a></li>
+      <li><a href="#DataStreamPage" class="ui-btn-active ui-state-persist">センサデータ</a></li>
+      <li><a href="#ConsolePage">コンソール</a></li>
+    </ul>
+    </div>
+  </div><!-- /header -->
+  <div role="main" class="ui-content">
+    <ul data-role="listview" data-filter="true" data-filter-placeholder="検索..." id="soxdata">
+    </ul>
+  </div><!-- /content -->
+  <div data-role="footer">
+    <h6><a href="http://sox.ht.sfc.keio.ac.jp/" target="_blank">KEIO Universal Sensor Network with Sensor-Over-XMPP (SOX)</a></h6>
+    <h6>This is a sample program with SOX JS Lib. <a href="./SoxEventViewer.tar.gz" target="_blank">(source code)</a></h6>
+    <h6>Version <span class="version"></span></h6>
+  </div><!-- /footer -->
+
+  <div data-role="popup" id="soxdatapopup">
+    Sox Data<br/>
+    <div id='soxdatabody'></div>
+  </div>
+
+</div><!-- /page -->
+
+
+<!-- コンソールページ -->
+<div data-role="page" id="ConsolePage">
+  <div data-role="header">
+    <h1><a href="http://sox.ht.sfc.keio.ac.jp/" target="_blank">KEIO USN</a>: SOXデータビューア</h1>
+    <div data-role="navbar">
+      <ul>
+	<li id="ConsolePageLinkToDeviceList"><a href="#">(読み込み中)</a></li>
+	<li><a href="#DataStreamPage">センサデータ</a></li>
+	<li><a href="#ConsolePage" class="ui-btn-active ui-state-persist">コンソール</a></li>
+      </ul>
+    </div>
+  </div><!-- /header -->
+  <div role="main" class="ui-content">
+    <ul data-role="listview" data-filter="true" data-filter-placeholder="検索..." id="consolelog">
+    </ul>
+  </div><!-- /content -->
+  <div data-role="footer">
+    <h6><a href="http://sox.ht.sfc.keio.ac.jp/" target="_blank">KEIO Universal Sensor Network with Sensor-Over-XMPP (SOX)</a></h6>
+    <h6>This is a sample program with SOX JS Lib. <a href="./SoxEventViewer.tar.gz" target="_blank">(source code)</a></h6>
+    <h6>Version <span class="version"></span></h6>
+  </div><!-- /footer -->
+</div><!-- /page -->
+
+</body>
+</html>
